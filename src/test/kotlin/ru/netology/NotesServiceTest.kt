@@ -12,7 +12,7 @@ class NotesServiceTest {
 
     @Test
     fun add() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
 
         val result = add(note1)
         assertEquals(1, result.id)
@@ -25,7 +25,7 @@ class NotesServiceTest {
 
     @Test
     fun delete() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
         add(note1)
 
         val result = delete(1)
@@ -34,7 +34,7 @@ class NotesServiceTest {
 
     @Test(expected = NoteNotFoundException::class)
     fun deleteThrowException() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
         add(note1)
 
         delete(10)
@@ -42,9 +42,9 @@ class NotesServiceTest {
 
     @Test
     fun edit() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
         add(note1)
-        val editedNote1 = Note(1, "note new title", "note new text", 1, 1)
+        val editedNote1 = Note(1, 1, "note new title", "note new text", 1, 1)
 
         var result = edit(editedNote1)
         assertTrue(result)
@@ -52,17 +52,17 @@ class NotesServiceTest {
 
     @Test(expected = NoteNotFoundException::class)
     fun editException() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
         add(note1)
-        val editedNote1 = Note(10, "note new title", "note new text", 1, 1)
+        val editedNote1 = Note(10, 1, "note new title", "note new text", 1, 1)
 
         edit(editedNote1)
     }
 
     @Test
     fun getAll() {
-        val note1 = Note(10, "note", "note text", 0, 0)
-        val note2 = Note(10, "note2", "note text2", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
+        val note2 = Note(10, 1, "note2", "note text2", 0, 0)
         add(note1)
         add(note2)
         val pairList = listOf<Pair<Int, Note>>(1 to note1.copy(id = 1), 2 to note2.copy(id = 2))
@@ -73,7 +73,7 @@ class NotesServiceTest {
 
     @Test
     fun getById() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
         add(note1)
 
         val result = getById(1)
@@ -82,7 +82,7 @@ class NotesServiceTest {
 
     @Test(expected = NoteNotFoundException::class)
     fun getByIdException() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
         add(note1)
 
         getById(10)

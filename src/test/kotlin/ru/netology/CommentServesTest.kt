@@ -17,7 +17,7 @@ class CommentServesTest {
 
     @Test
     fun add() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
         NotesService.add(note1)
         val comment1 = Comment(1,10, 1, 1, "comment")
         val result = add(comment1)
@@ -33,7 +33,7 @@ class CommentServesTest {
 
     @Test
     fun delete() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
         NotesService.add(note1)
         val comment1 = Comment(1,10, 1, 1, "comment")
         add(comment1)
@@ -49,7 +49,7 @@ class CommentServesTest {
 
     @Test
     fun edit() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
         NotesService.add(note1)
         val comment1 = Comment(1,10, 1, 1, "comment")
         add(comment1)
@@ -68,7 +68,7 @@ class CommentServesTest {
 
     @Test
     fun getComments() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
         NotesService.add(note1)
         val comment1 = Comment(1,10, 1, 1, "comment")
         add(comment1)
@@ -82,7 +82,7 @@ class CommentServesTest {
 
     @Test
     fun restoreComments() {
-        val note1 = Note(10, "note", "note text", 0, 0)
+        val note1 = Note(10, 1, "note", "note text", 0, 0)
         NotesService.add(note1)
         val comment1 = Comment(1,10, 1, 1, "comment")
         add(comment1)
