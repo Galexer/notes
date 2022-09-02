@@ -1,7 +1,6 @@
 package ru.netology
 
-fun main(args: Array<String>) {
-    println("Hello World!")
+fun main() {
 }
 
 data class Note(
@@ -21,33 +20,39 @@ data class Comment(
 )
 
 abstract class CRUDFun <T> {
-    protected var notes = mutableMapOf<Int, Note>()
-    protected var noteId = 0
-    protected var comments = mutableMapOf<Int, Comment>()
-    protected var commentIds = 0
-    protected var deletedComments = mutableMapOf<Int, Comment>()
-    open fun addThis (think: T): T{
-        return think
+    open fun add (thing: T): T{
+        return thing
     }
-    open fun deleteThis(thing: T): Boolean{
+    open fun delete(id: Int): Boolean{
         return false
     }
-    open fun editThis(thing: T): Boolean{
+    open fun edit(thing: T): Boolean{
         return false
     }
 }
 
 object NotesService: CRUDFun<Note>() {
-    override fun addThis(note: Note): Note {
+    var notes = mutableMapOf<Int, Note>()
+    var noteId = 0
+    fun clear() {
+        notes = mutableMapOf<Int, Note>()
+        noteId = 0
+    }
+    override fun add(note: Note): Note {
+        noteId++
         val noteNew = note.copy(id = noteId)
         notes[noteId] = noteNew
-        noteId++
-        return notes[note.id] ?: throw NoAddedNoteException("Note has not added")
+        return notes[noteId]!!
     }
 
-    override fun deleteThis(note: Note) = notes.remove(note.id, note)
+    override fun delete(id: Int): Boolean {
+        if(notes.containsKey(id)){
+            return notes.remove(notes[id]?.id, notes[id])
+        }
+        throw NoteNotFoundException("Note with this ID not found")
+    }
 
-    override fun editThis(note: Note): Boolean {
+    override fun edit(note: Note): Boolean {
         if(notes.containsKey(note.id)) {
             notes[note.id] = note
             return true
@@ -60,27 +65,37 @@ object NotesService: CRUDFun<Note>() {
     fun getById(id: Int) = notes[id] ?: throw NoteNotFoundException("Note with this ID not found")
 }
 object CommentServes: CRUDFun<Comment>(){
-    override fun addThis(comment: Comment): Comment {
-        if(notes.containsKey(comment.noteId)) {
-            val comNew = comment.copy(commentId = commentIds)
-            comments.put(comNew.commentId, comNew)
+    var comments = mutableMapOf<Int, Comment>()
+    var commentIds = 0
+    var deletedComments = mutableMapOf<Int, Comment>()
+
+    fun clear() {
+        comments = mutableMapOf<Int, Comment>()
+        commentIds = 0
+        deletedComments = mutableMapOf<Int, Comment>()
+    }
+    override fun add(comment: Comment): Comment {
+        if(NotesService.getById(comment.noteId).id == comment.noteId) {
             commentIds++
+            val comNew = comment.copy(commentId = commentIds)
+            comments[comNew.commentId] = comNew
             return comments[comNew.commentId]!!
         }
-        throw NoteNotFoundException("Comment not added for this note, because note not found")
+        throw CommentNotAddedException("Comment not added")
     }
 
-    override fun deleteThis(comment: Comment): Boolean {
-        if(comments.containsKey(comment.commentId)){
-            deletedComments += comment.commentId to comment
-            return comments.remove(comment.commentId, comment)
+    override fun delete(id: Int): Boolean {
+        if(comments.containsKey(id)){
+            deletedComments += comments[id]!!.commentId to comments[id]!!
+            return comments.remove(comments[id]?.commentId, comments[id])
         }
         throw CommNotDeletedException("Comment not deleted or not already exist")
     }
 
-    override fun editThis(comment: Comment): Boolean {
+    override fun edit(comment: Comment): Boolean {
         if(comments.containsKey(comment.commentId)) {
             comments[comment.commentId] = comment
+            return true
         }
         throw CommNotFoundException("Note with this ID not found")
     }
@@ -93,8 +108,8 @@ object CommentServes: CRUDFun<Comment>(){
     }
 }
 
-class NoAddedNoteException(text: String): RuntimeException(text)
 class NoteNotFoundException(text: String): RuntimeException(text)
 class CommNotDeletedException(text: String): RuntimeException(text)
 class CommNotFoundException(text: String): RuntimeException(text)
 class NoCommForRestoreException(text: String): RuntimeException(text)
+class CommentNotAddedException(text: String):  RuntimeException(text)
